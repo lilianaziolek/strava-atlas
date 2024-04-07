@@ -133,7 +133,8 @@ const ViewerMap: m.ClosureComponent<ViewerMapAttrs> = ({attrs: {visibleActs$, se
         const listedActs = hoveredActs.slice(0, 2);
         const numUnlistedActs = hoveredActs.length - 2;
         const tooltipContent = listedActs
-           .map((act) => `${act.data.name} (${act.startDate.toLocaleDateString()})`)
+           //.map((act) => `${act.data.name} (${act.startDate.toLocaleDateString()})`)
+           .map((act) => `${act.data.name} (${(act.data.distance / 1000).toFixed(1)}km, ${act.data.totalElevationGain.toFixed(2)}m)`)
            .join("<br/>")
            + (numUnlistedActs > 0 ? `<br/>… and ${numUnlistedActs} more` : '');
         tooltip.setContent(tooltipContent);
