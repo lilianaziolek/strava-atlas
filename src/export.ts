@@ -22,8 +22,8 @@ function actToGeoJSONFeature(act: Act): GeoJSON.Feature | undefined {
       type: act.data.type,
       startDate: act.startDate.toISOString(),
       distance: act.data.distance,
-      movingTime: act.data.moving_time,
-      totalElevationGain: act.data.total_elevation_gain,
+      movingTime: act.data.movingTime,
+      totalElevationGain: act.data.totalElevationGain,
     },
   };
 }

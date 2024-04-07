@@ -3,19 +3,19 @@ import m from 'mithril';
 import Stream from 'mithril/stream';
 
 import JSONStorageItem from '../JSONStorageItem';
-import { fetchActivities, OAuthResponse, StravaSummaryActivity } from '../stravaApi';
+import {fetchActivitiesOrRoutes, OAuthResponse, StravaShortSummary} from '../stravaApi';
 import Viewer from './Viewer';
 import Welcome from './Welcome';
 
 
-const actDataStorage = new JSONStorageItem<StravaSummaryActivity[]>('actData');
+const actDataStorage = new JSONStorageItem<StravaShortSummary[]>('actData');
 const tokenStorage = new JSONStorageItem<OAuthResponse>('token');
 const syncDateStorage = new JSONStorageItem<number>('syncDate');
 
 
 const Index: m.ClosureComponent = () => {
-  // This is a stream containing a complete set of all the user's activities
-  const actData$ = Stream<StravaSummaryActivity[] | undefined>(undefined);
+  // This is a stream containing a complete set of all the user's activities and/or routes
+  const actData$ = Stream<StravaShortSummary[] | undefined>(undefined);
   const actDataFromLS = actDataStorage.get();
   if (actDataFromLS) {
     actData$(actDataFromLS);
@@ -27,7 +27,7 @@ const Index: m.ClosureComponent = () => {
   });
 
   // This is a stream containing the (possibly partial) set of activities being downloaded for the user
-  const actDataSync$ = Stream<StravaSummaryActivity[] | undefined>();
+  const actDataSync$ = Stream<StravaShortSummary[] | undefined>();
 
   // This is a stream containing the last sync date
   const syncDate$ = Stream<number>();
@@ -74,13 +74,14 @@ const Index: m.ClosureComponent = () => {
       let actData = actData$();
       if (!fromScratch && actData && actData.length > 0) {
         actDataSync$(actData);
-        const times = actData.map((act) => +new Date(act.start_date) / 1000);
+        const times = actData.map((act) => +new Date(act.startDate) / 1000);
         afterTime = _.max(times);
       } else {
         actDataSync$([]);
       }
 
-      await fetchActivities(token.access_token, (newActData) => {
+    await fetchActivitiesOrRoutes(type, token?.access_token,
+      (newActData) => {
         // This runs whenever a new page of data comes in
         if (fromScratch) {
           actDataSync$(newActData);
@@ -93,9 +94,11 @@ const Index: m.ClosureComponent = () => {
       actData$(actDataSync$()!);
       actDataSync$(undefined);
       syncDate$(+new Date());
-    } else {
-      window.location.href = 'api/redirect-to-auth';
-    }
+  }
+
+  async function syncAll() {
+    sync({fromScratch: true, type: "routes"});
+    sync({fromScratch: false, type: "activities"});
   }
 
   return {
@@ -107,7 +110,7 @@ const Index: m.ClosureComponent = () => {
       // return m(Welcome, {actDataSync$: Stream([]) as any});
 
       if (actData$()) {
-        return m(Viewer, {actData$: actData$ as Stream<StravaSummaryActivity[]>, actDataSync$, syncDate$, sync});
+        return m(Viewer, {actData$: actData$ as Stream<StravaShortSummary[]>, actDataSync$, syncDate$, sync});
       } else {
         return m(Welcome, {actDataSync$});
       }

@@ -38,40 +38,17 @@ export enum StravaActivityType {
   Yoga = 'Yoga',
 }
 
-export interface StravaSummaryActivity {
-  id: number,
-  external_id: string,
-  upload_id: number,
-  // athlete: MetaAthlete;
-  name: string,
-  distance: number,
-  moving_time: number,
-  elapsed_time: number,
-  total_elevation_gain: number,
-  elev_high: number,
-  elev_low: number,
-  type: StravaActivityType,
-  start_date: Date,
-  start_date_local: Date,
-  timezone: string,
-  start_latlng: [number, number] | null,
-  end_latlng: [number, number] | null,
-  achievement_count: number,
-  kudos_count: number,
-  comment_count: number,
-  athlete_count: number,
-  photo_count: number,
-  total_photo_count: number,
-  map: StravaPolylineMap | null,
-  trainer: boolean,
-  commute: boolean,
-  manual: boolean,
-  private: boolean,
-  flagged: boolean,
-  workout_type: number,
-  average_speed: number,
-  max_speed: number,
-  has_kudoed: boolean,
+export interface StravaShortSummary {
+   id: string,
+   name: string,
+   distance: number,
+   movingTime: number,
+   totalElevationGain: number,
+   type: StravaActivityType,
+   startDate: Date,
+   startLatlng: [number, number] | null,
+   endLatlng: [number, number] | null,
+   map: StravaPolylineMap | null,
 }
 
 export interface OAuthResponse {
@@ -80,13 +57,18 @@ export interface OAuthResponse {
   expires_at: number,
 }
 
-export async function fetchActivities(access_token: string, onProgress?: (actData: StravaSummaryActivity[]) => void, per_page = 50, after?: number): Promise<StravaSummaryActivity[]> {
+export async function fetchActivitiesOrRoutes(type: string,
+                                              access_token?: string,
+                                              onProgress?: (actData: StravaShortSummary[]) => void,
+                                              per_page = 50,
+                                              after?: number): Promise<StravaShortSummary[]> {
   let actData = [];
   let page = 1;
   let actDataBatch;
   do {
-    actDataBatch = await m.request<StravaSummaryActivity[]>({
-      url: `https://www.strava.com/api/v3/athlete/activities?per_page=${per_page}&page=${page}` + (after ? `&after=${after}` : ''),
+    actDataBatch = await m.request<StravaShortSummary[]>({
+      //url: `https://www.strava.com/api/v3/athlete/activities?per_page=${per_page}&page=${page}` + (after ? `&after=${after}` : ''),
+      url: `http://localhost:8080/strava/${type}?per_page=${per_page}&page=${page}`,
       headers: {'Authorization': `Bearer ${access_token}`},
     });
     actData.push(...actDataBatch);

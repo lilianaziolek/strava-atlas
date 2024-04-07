@@ -33,7 +33,8 @@ interface ViewerTableRowAttrs {
 const ViewerTableRow: m.ClosureComponent<ViewerTableRowAttrs> = () => {
   return {
     view: ({attrs: {act, isVisible, isHovered, isHoveredDirectly, isSelected, attrs}}) => {
-      return m('.ViewerTableRow',
+        let url = (act.data.startLatlng != null) ? `https://www.strava.com/activities/${act.data.id}` : `https://www.strava.com/routes/${act.data.id}`;
+        return m('.ViewerTableRow',
         {
           id: `ViewerTableRow-${act.data.id}`,
           class: classnames({invisible: !isVisible, hovered: isHovered, "hovered-directly": isHoveredDirectly, selected: isSelected}),
@@ -45,12 +46,12 @@ const ViewerTableRow: m.ClosureComponent<ViewerTableRowAttrs> = () => {
             act.data.name,
             act.latLngs === undefined && [' ', m('span.ViewerTableRow-no-map', '[no map]')]
           ),
-          m('.ViewerTableRow-date', dayjs(act.data.start_date).format('YYYY-MM-DD dd')),
-          m('.ViewerTableRow-stat', formatDuration(act.data.moving_time)),
-          m('.ViewerTableRow-stat', (act.data.distance / 1609.34).toFixed(1), m('.ViewerTableRow-unit', 'mi')),
-          m('.ViewerTableRow-stat', (act.data.total_elevation_gain * 3.28084).toFixed(0), m('.ViewerTableRow-unit', 'ft')),
+          m('.ViewerTableRow-date', dayjs(act.data.startDate).format('YYYY-MM-DD dd')),
+          m('.ViewerTableRow-stat', formatDuration(act.data.movingTime)),
+          m('.ViewerTableRow-stat', (act.data.distance/ 1000).toFixed(1), m('.ViewerTableRow-unit', 'km')),
+          m('.ViewerTableRow-stat', (act.data.totalElevationGain), m('.ViewerTableRow-unit', 'm')),
           m('a.ViewerTableRow-strava-link', {
-              href: `https://www.strava.com/activities/${act.data.id}`,
+              href: url,
               onclick: (ev: Event) => ev.stopPropagation(),
               target: '_blank',
             },

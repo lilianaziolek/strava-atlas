@@ -2,11 +2,11 @@ import './Welcome.css';
 
 import m from 'mithril';
 import Stream from 'mithril/stream';
-import { StravaSummaryActivity } from '../stravaApi';
+import { StravaShortSummary } from '../stravaApi';
 import { redrawOn } from '../shared';
 
 interface WelcomeAttrs {
-  actDataSync$: Stream<StravaSummaryActivity[] | undefined>,
+  actDataSync$: Stream<StravaShortSummary[] | undefined>,
 }
 const Welcome: m.ClosureComponent<WelcomeAttrs> = ({attrs: {actDataSync$}}) => {
   redrawOn(actDataSync$);

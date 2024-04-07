@@ -78,14 +78,14 @@ const ViewerMap: m.ClosureComponent<ViewerMapAttrs> = ({attrs: {visibleActs$, se
 
     selectedActId$.map((selectedActId) => {
       const selectedAct = visibleActs$().find((act) => act.data.id === selectedActId);
-      if (selectedAct && selectedAct.data.start_latlng) {
-        startMarker.setLatLng(selectedAct.data.start_latlng);
+      if (selectedAct && selectedAct.data.startLatlng) {
+        startMarker.setLatLng(selectedAct.data.startLatlng);
         startMarker.setOpacity(1);
       } else {
         startMarker.setOpacity(0);
       }
-      if (selectedAct && selectedAct.data.end_latlng) {
-        endMarker.setLatLng(selectedAct.data.end_latlng);
+      if (selectedAct && selectedAct.data.endLatlng) {
+        endMarker.setLatLng(selectedAct.data.endLatlng);
         endMarker.setOpacity(1);
       } else {
         endMarker.setOpacity(0);

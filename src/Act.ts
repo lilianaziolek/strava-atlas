@@ -3,7 +3,7 @@ import mbPolyline from '@mapbox/polyline';
 import * as PIXI from 'pixi.js';
 import L from 'leaflet';
 
-import { StravaSummaryActivity } from './stravaApi';
+import { StravaShortSummary } from './stravaApi';
 
 
 type GetScale = (zoom: number | undefined) => number;
@@ -22,8 +22,8 @@ export class Act {
   getScaleFromProj: GetScale | undefined;
 
 
-  constructor(public data: StravaSummaryActivity) {
-    this.startDate = new Date(data.start_date);
+  constructor(public data: StravaShortSummary) {
+    this.startDate = new Date(data.startDate);
 
     const polyline = data.map?.summary_polyline;
     if (polyline) {

@@ -5,17 +5,17 @@ import Stream from 'mithril/stream';
 
 import ViewerTable from './ViewerTable';
 import ViewerMap from './ViewerMap';
-import { StravaSummaryActivity } from '../stravaApi';
+import { StravaShortSummary } from '../stravaApi';
 import { Act } from '../Act';
 import { redrawOn } from '../shared';
 import JSONStorageItem from '../JSONStorageItem';
 
 
 interface ViewerAttrs {
-  actData$: Stream<StravaSummaryActivity[]>,
-  actDataSync$: Stream<StravaSummaryActivity[] | undefined>,
+  actData$: Stream<StravaShortSummary[]>,
+  actDataSync$: Stream<StravaShortSummary[] | undefined>,
   syncDate$: Stream<number>,
-  sync: (params: {fromScratch: boolean}) => void,
+  sync: (params: {fromScratch: boolean, type: string}) => void,
 }
 const Viewer: m.ClosureComponent<ViewerAttrs> = ({attrs: { actData$, actDataSync$, syncDate$, sync }}) => {
   // Modes:
@@ -59,7 +59,7 @@ const Viewer: m.ClosureComponent<ViewerAttrs> = ({attrs: { actData$, actDataSync
   });
 
   // For cross-storage convenience
-  const selectedActDataStorage = new JSONStorageItem<StravaSummaryActivity | undefined>('selectedActData');
+  const selectedActDataStorage = new JSONStorageItem<StravaShortSummary | undefined>('selectedActData');
   selectedActId$.map((selectedActId) => {
     const selectedAct = acts$().find((act) => act.data.id === selectedActId);
     selectedActDataStorage.set(selectedAct?.data);
