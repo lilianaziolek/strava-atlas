@@ -51,8 +51,8 @@ function drawActivity (gs: PIXI.Graphics, act: Act) {
 
 interface PathsLayerArgs {
   visibleActs$: Stream<Act[]>,
-  hoveredActIds$: Stream<number[]>,
-  selectedActId$: Stream<number | undefined>,
+  hoveredActIds$: Stream<string[]>,
+  selectedActId$: Stream<string | undefined>,
 }
 export default function pathsLayer({visibleActs$, hoveredActIds$, selectedActId$}: PathsLayerArgs): L.Layer {
   let satActCount = 5;

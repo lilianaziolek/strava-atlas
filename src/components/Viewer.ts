@@ -27,9 +27,9 @@ const Viewer: m.ClosureComponent<ViewerAttrs> = ({attrs: { actData$, actDataSync
   const acts$ = actData$.map((actData) => actData.map((data) => new Act(data)));
   (window as any).acts$ = acts$;
 
-  const hoveredActIds$ = Stream<number[]>([]);
-  const multiselectedActIds$ = Stream<number[]>([]);
-  const selectedActId$ = Stream<number | undefined>(undefined);
+  const hoveredActIds$ = Stream<string[]>([]);
+  const multiselectedActIds$ = Stream<string[]>([]);
+  const selectedActId$ = Stream<string | undefined>(undefined);
 
   const filterFromTable$ = Stream<(acts: Act) => boolean>(() => true);
 

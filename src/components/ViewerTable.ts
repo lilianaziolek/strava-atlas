@@ -17,8 +17,8 @@ interface ViewerTableAttrs {
   acts$: Stream<Act[]>,
   filterFromTable$: Stream<(acts: Act) => boolean>,
   visibleActs$: Stream<Act[]>,
-  hoveredActIds$: Stream<number[]>,
-  selectedActId$: Stream<number | undefined>,
+  hoveredActIds$: Stream<string[]>,
+  selectedActId$: Stream<string | undefined>,
 }
 const ViewerTable: m.ClosureComponent<ViewerTableAttrs> = ({attrs: {acts$, filterFromTable$, selectedActId$, hoveredActIds$, visibleActs$}}) => {
   let headerDom: HTMLElement | undefined;

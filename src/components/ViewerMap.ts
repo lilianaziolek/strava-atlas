@@ -18,9 +18,9 @@ import pathsLayer from '../pathsLayer';
 
 interface ViewerMapAttrs {
   visibleActs$: Stream<Act[]>,
-  hoveredActIds$: Stream<number[]>,
-  multiselectedActIds$: Stream<number[]>,
-  selectedActId$: Stream<number | undefined>,
+  hoveredActIds$: Stream<string[]>,
+  multiselectedActIds$: Stream<string[]>,
+  selectedActId$: Stream<string | undefined>,
 }
 const ViewerMap: m.ClosureComponent<ViewerMapAttrs> = ({attrs: {visibleActs$, selectedActId$, multiselectedActIds$, hoveredActIds$}}) => {
   function oncreate({dom}: VnodeDOM) {
