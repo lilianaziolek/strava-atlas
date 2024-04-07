@@ -12,6 +12,7 @@ const actDataStorage = new JSONStorageItem<StravaShortSummary[]>('actData');
 const tokenStorage = new JSONStorageItem<OAuthResponse>('token');
 const syncDateStorage = new JSONStorageItem<number>('syncDate');
 
+const authenticateInFrontend = false;
 
 const Index: m.ClosureComponent = () => {
   // This is a stream containing a complete set of all the user's activities and/or routes
@@ -45,30 +46,38 @@ const Index: m.ClosureComponent = () => {
   if (tokenFromSP) {
     tokenStorage.setRaw(tokenFromSP);
     window.history.replaceState({}, '', '/');
-    sync({fromScratch: true});  // if we just authed, we should certainly sync
-  } else {
+    syncAll();  // if we just authed, we should certainly sync
+  } else if (authenticateInFrontend) {
     // Try using token in LS
     let token = tokenStorage.get();
     if (token) {
       // If it's been long enough, get a sync going
       const syncDate = syncDate$();
       if (!syncDate || +new Date() - syncDate > 1000 * 60 * 60) {
-        sync({fromScratch: false});
+        syncAll();
       }
     }
+  } else {
+    syncAll();
   }
 
-  async function sync({fromScratch}: {fromScratch: boolean}) {
-    let token = tokenStorage.get();
-    if (token) {
-      // Refresh the token if necessary
-      if (token.expires_at * 1000 < +new Date()) {
-        token = await m.request<OAuthResponse>({
-          url: `/api/submit-refresh-token?refresh_token=${token.refresh_token}`,
-        });
-        // TODO: error handling
-        tokenStorage.set(token);
+  async function sync({fromScratch, type}: { fromScratch: boolean, type: string }) {
+    let token = undefined;
+    if (authenticateInFrontend) {
+      token = tokenStorage.get();
+      if (token) {
+        // Refresh the token if necessary
+        if (token.expires_at * 1000 < +new Date()) {
+          token = await m.request<OAuthResponse>({
+            url: `/api/submit-refresh-token?refresh_token=${token.refresh_token}`,
+          });
+          // TODO: error handling
+          tokenStorage.set(token);
+        }
+      } else {
+        window.location.href = 'api/redirect-to-auth';
       }
+    }
 
       let afterTime: number | undefined = undefined;
       let actData = actData$();
