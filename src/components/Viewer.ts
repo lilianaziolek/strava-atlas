@@ -89,13 +89,8 @@ const Viewer: m.ClosureComponent<ViewerAttrs> = ({attrs: { actData$, actDataSync
                   ]
                 : [
                     `Last synced at ${new Date(syncDate$()).toLocaleString()}. `,
-                    m('button', { onclick: () => sync({fromScratch: false}) }, 'Sync now'),
-                    m('details.Viewer-advanced-details',
-                      m('summary', 'Advanced'),
-                      m('.Viewer-advanced-controls',
-                        m('button', { onclick: () => sync({fromScratch: true}) }, 'Sync from scratch'),
-                      )
-                    ),
+                    m('button', { onclick: () => sync({fromScratch: true, type: "activities"}) }, 'Sync activities'),
+                    m('button', { onclick: () => sync({fromScratch: true, type: "routes"}) }, 'Sync routes'),
                   ]
               )
             ),
