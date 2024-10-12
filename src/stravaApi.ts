@@ -60,7 +60,7 @@ export interface OAuthResponse {
 export async function fetchActivitiesOrRoutes(type: string,
                                               access_token?: string,
                                               onProgress?: (actData: StravaShortSummary[]) => void,
-                                              per_page = 50,
+                                              per_page = 100,
                                               after?: number): Promise<StravaShortSummary[]> {
   let actData = [];
   let page = 1;
@@ -68,13 +68,13 @@ export async function fetchActivitiesOrRoutes(type: string,
   do {
     actDataBatch = await m.request<StravaShortSummary[]>({
       //url: `https://www.strava.com/api/v3/athlete/activities?per_page=${per_page}&page=${page}` + (after ? `&after=${after}` : ''),
-      url: `http://localhost:8080/strava/${type}?per_page=${per_page}&page=${page}`,
+      url: `http://localhost:8080/strava/${type}?perPage=${per_page}&page=${page}`,
       headers: {'Authorization': `Bearer ${access_token}`},
     });
     actData.push(...actDataBatch);
     page++;
     onProgress && onProgress(actData.slice());
-  } while (actDataBatch.length === per_page);
+  } while (actDataBatch.length >= per_page);
   return actData;
 }
 // NOTE: { 'Accept': 'application/json+meta' } can be used to return a big list of IDs
